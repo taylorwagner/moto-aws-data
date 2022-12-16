@@ -8,4 +8,4 @@
 
 ## Test Command
 
-```pytest test_dynamodb.py```
+```pytest tests/test_dynamodb.py```
