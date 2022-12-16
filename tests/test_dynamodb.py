@@ -1,17 +1,14 @@
 import pytest
 
-from dynamodb import MyDynamoDBClient
+from contextlib import contextmanager
 
 
-@pytest.fixture
-def table_name():
-    return "my-test-table"
+@contextmanager
+def create_table(dynamodb_client):
+    """Create mock DynamoDB table to test full CRUD operations"""
 
-
-@pytest.fixture
-def dynamodb_test(dynamodb_client, table_name):
     dynamodb_client.create_table(
-        TableName=table_name,
+        TableName="my-test-table",
         KeySchema=[
             {
                 'AttributeName': 'attribute1',
@@ -39,7 +36,13 @@ def dynamodb_test(dynamodb_client, table_name):
     )
     yield
 
-def test_list_tables(dynamodb_client, dynamodb_test):
-    client = MyDynamoDBClient()
-    tables = client.list_tables()
-    assert tables == ["my-test-table"]
+class TestDynamoDB:
+    """Test CRUD operations on mock DynamoDB table"""
+
+    def test_create_table(self, dynamodb_client):
+        """Test creation of DynamoDB table"""
+
+        with create_table(dynamodb_client):
+
+            res = dynamodb_client.describe_table(TableName="my-test-table")
+            assert res['Table']['TableName'] == "my-test-table"
