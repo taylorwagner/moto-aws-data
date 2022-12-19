@@ -45,7 +45,9 @@ class TestDynamoDB:
         with create_table(dynamodb_client):
 
             res = dynamodb_client.describe_table(TableName="my-test-table")
+            res2 = dynamodb_client.list_tables()
             assert res['Table']['TableName'] == "my-test-table"
+            assert res2['TableNames'] == ["my-test-table"]
 
     def test_delete_table(self, dynamodb_client):
         """Test deletion of 'my-test-table' DynamoDB table"""
@@ -54,4 +56,4 @@ class TestDynamoDB:
 
             dynamodb_client.delete_table(TableName="my-test-table")
             res = dynamodb_client.list_tables()
-            assert res['TableNames'] != "my-test-table"
+            assert res['TableNames'] != ["my-test-table"]
