@@ -40,9 +40,18 @@ class TestDynamoDB:
     """Test CRUD operations on mock DynamoDB table"""
 
     def test_create_table(self, dynamodb_client):
-        """Test creation of DynamoDB table"""
+        """Test creation of 'my-test-table' DynamoDB table"""
 
         with create_table(dynamodb_client):
 
             res = dynamodb_client.describe_table(TableName="my-test-table")
             assert res['Table']['TableName'] == "my-test-table"
+
+    def test_delete_table(self, dynamodb_client):
+        """Test deletion of 'my-test-table' DynamoDB table"""
+
+        with create_table(dynamodb_client):
+
+            dynamodb_client.delete_table(TableName="my-test-table")
+            res = dynamodb_client.list_tables()
+            assert res['TableNames'] != "my-test-table"
