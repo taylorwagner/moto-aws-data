@@ -10,3 +10,8 @@
 
 ```pytest tests/```
 ```pytest tests/test_dynamodb.py```
+
+### Debug Pro-Tip
+
+Include "-s" inside test command to see print statements:
+    ex: ```pytest -s tests/```
