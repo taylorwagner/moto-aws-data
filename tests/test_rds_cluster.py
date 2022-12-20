@@ -17,7 +17,7 @@ def create_db_cluster(rds_client):
 
 
 class TestRDSCluster:
-    """Test CRUD operations on mock RDS cluster"""
+    """Test operations on mock RDS cluster"""
 
     def test_create_db_cluster(self, rds_client):
         """Test creation of mock RDS cluster"""

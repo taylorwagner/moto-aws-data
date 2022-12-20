@@ -22,7 +22,7 @@ def create_db_instance(rds_client):
 
 
 class TestRDSInstance:
-    """Test CRUD operations on mock RDS instance"""
+    """Test operations on mock RDS instance"""
 
     def test_create_db_instance(self, rds_client):
         """Test creation of mock RDS instance"""
