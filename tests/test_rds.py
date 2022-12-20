@@ -38,6 +38,7 @@ class TestRDSInstance:
             assert instance_details['DBInstanceClass'] == "db.t2.micro"
             assert instance_details['Engine'] == "aurora"
             assert instance_details['Endpoint']['Port'] == 3306
+            assert instance_details['DBInstanceStatus'] == 'available'
 
 
     def test_modify_instance(self, rds_client):
