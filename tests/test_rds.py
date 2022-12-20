@@ -39,4 +39,19 @@ class TestRDS:
             assert instance_details['Engine'] == "aurora"
             assert instance_details['Endpoint']['Port'] == 3306
 
+
+    def test_delete_db_instance(self, rds_client):
+        """Test deletion of RDS instance"""
+
+        with create_db_instance(rds_client):
+
+            res = rds_client.delete_db_instance(
+                DBInstanceIdentifier="my-aurora-instance",
+                SkipFinalSnapshot=False,
+                FinalDBSnapshotIdentifier="final-snap",
+                DeleteAutomatedBackups=False
+            )
+
+            assert res['DBInstance']['DBInstanceIdentifier'] == "my-aurora-instance"
+
             
