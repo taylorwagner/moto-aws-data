@@ -32,7 +32,11 @@ def create_table(dynamodb_client):
         ProvisionedThroughput={
             'ReadCapacityUnits': 10,
             'WriteCapacityUnits': 10
-        }
+        },
+        Tags=[
+            {"Key": "TestTag", "Value": "TestValue"},
+            {"Key": "TestTag2", "Value": "TestValue2"},
+        ]
     )
     yield
 
@@ -72,6 +76,43 @@ class TestDynamoDB:
 
             assert add_item['ResponseMetadata']['HTTPStatusCode'] == 200
             assert res['Item']['attribute1'] == {"S": "attribute1_value"}
+
+    def test_list_table_tags(self, dynamodb_client):
+        """Test listing the tags on 'my-test-table' DynamoDB table"""
+
+        with create_table(dynamodb_client):
+
+            res = dynamodb_client.describe_table(TableName="my-test-table")
+            table_arn = res['Table']['TableArn']
+            list_tags = dynamodb_client.list_tags_of_resource(ResourceArn=table_arn)
+
+            assert table_arn == "arn:aws:dynamodb:us-east-1:123456789012:table/my-test-table"
+            assert list_tags['Tags'][0] == {'Key': 'TestTag', 'Value': 'TestValue'}, {'Key': 'TestTag2', 'Value': 'TestValue2'}
+            assert len(list_tags['Tags']) == 2
+
+    def test_add_tags(self, dynamodb_client):
+        """Test adding tags to 'my-test-table' DynamoDB table"""
+
+        with create_table(dynamodb_client):
+
+            res = dynamodb_client.describe_table(TableName="my-test-table")
+            table_arn = res['Table']['TableArn']
+
+            dynamodb_client.tag_resource(
+                ResourceArn=table_arn,
+                Tags=[
+                    {"Key": "NewTag", "Value": "NewValue"},
+                    {"Key": "NewestTag", "Value": "NewestValue"},
+                ]
+            )
+
+            list_tags = dynamodb_client.list_tags_of_resource(ResourceArn=table_arn)
+
+            print(list_tags)
+
+            assert list_tags['Tags'][2] == {'Key': 'NewTag', 'Value': 'NewValue'}
+            assert list_tags['Tags'][3] == {'Key': 'NewestTag', 'Value': 'NewestValue'}
+            assert len(list_tags['Tags']) == 4
 
     def test_delete_table(self, dynamodb_client):
         """Test deletion of 'my-test-table' DynamoDB table"""
