@@ -15,3 +15,5 @@
 
 Include "-s" inside test command to see print statements:
     ex: ```pytest -s tests/```
+
+Include "-sv" for detailed list of pass/fail per test
