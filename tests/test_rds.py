@@ -25,7 +25,7 @@ class TestRDS:
     """Test CRUD operations on mock RDS instance"""
 
     def test_create_db_instance(self, rds_client):
-        """Test creation of RDS instance"""
+        """Test creation of mock RDS instance"""
 
         with create_db_instance(rds_client):
 
@@ -40,8 +40,23 @@ class TestRDS:
             assert instance_details['Endpoint']['Port'] == 3306
 
 
+    def test_modify_instance(self, rds_client):
+        """Test modification of mock RDS instance"""
+
+        with create_db_instance(rds_client):
+
+            res = rds_client.modify_db_instance(
+                DBInstanceIdentifier="my-aurora-instance",
+                MultiAZ=True,
+                EnableIAMDatabaseAuthentication=True
+            )
+
+            assert res['DBInstance']['MultiAZ'] == True
+            assert res['DBInstance']['IAMDatabaseAuthenticationEnabled'] == True
+
+
     def test_delete_db_instance(self, rds_client):
-        """Test deletion of RDS instance"""
+        """Test deletion of mock RDS instance"""
 
         with create_db_instance(rds_client):
 
