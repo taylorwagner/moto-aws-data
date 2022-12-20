@@ -76,6 +76,7 @@ class TestDynamoDB:
 
             assert add_item['ResponseMetadata']['HTTPStatusCode'] == 200
             assert res['Item']['attribute1'] == {"S": "attribute1_value"}
+            assert len(res['Item']) == 2
 
     def test_list_table_tags(self, dynamodb_client):
         """Test listing the tags on 'my-test-table' DynamoDB table"""
