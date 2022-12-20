@@ -55,6 +55,21 @@ class TestRDSInstance:
             assert res['DBInstance']['IAMDatabaseAuthenticationEnabled'] == True
 
 
+    def test_add_read_replica(self, rds_client):
+        """Test adding a read replica of the mock RDS instance"""
+
+        with create_db_instance(rds_client):
+
+            res = rds_client.create_db_instance_read_replica(
+                DBInstanceIdentifier="my-read-replica",
+                SourceDBInstanceIdentifier="my-aurora-instance",
+            )
+            describe_instance = rds_client.describe_db_instances(DBInstanceIdentifier="my-aurora-instance")
+
+            assert res['DBInstance']['DBInstanceIdentifier'] == 'my-read-replica'
+            assert describe_instance['DBInstances'][0]['ReadReplicaDBInstanceIdentifiers'][0] == 'my-read-replica'
+
+
     def test_delete_db_instance(self, rds_client):
         """Test deletion of mock RDS instance"""
 
