@@ -71,7 +71,7 @@ class TestDynamoDB:
             )
 
             assert add_item['ResponseMetadata']['HTTPStatusCode'] == 200
-            assert res['Item']['attribute1'] != 'attribute1_value'
+            assert res['Item']['attribute1'] == {"S": "attribute1_value"}
 
     def test_delete_table(self, dynamodb_client):
         """Test deletion of 'my-test-table' DynamoDB table"""
