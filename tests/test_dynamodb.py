@@ -81,6 +81,41 @@ class TestDynamoDB:
             assert len(res['Item']) == 2
 
 
+    def test_delete_item(self, dynamodb_client):
+        """Test deleting an item from 'my-test-table' DynamoDB table"""
+
+        with create_table(dynamodb_client):
+
+            ## Add an item to delete
+            dynamodb_client.put_item(
+                TableName="my-test-table",
+                Item={
+                    "attribute1": {"S": "attribute1_value"},
+                    "attribute2": {"S": "attribute2_value"},
+                },
+            )
+
+            ## Delete previously added item
+            dynamodb_client.delete_item(
+                TableName="my-test-table",
+                Key={
+                    "attribute1": {"S": "attribute1_value"},
+                    "attribute2": {"S": "attribute2_value"},
+                },
+            )
+
+            res = dynamodb_client.get_item(
+                TableName="my-test-table",
+                Key={
+                    "attribute1": {"S": "attribute1_value"},
+                    "attribute2": {"S": "attribute2_value"},
+                },
+            )
+
+            if 'Item' not in res:
+                assert res['ResponseMetadata']['HTTPStatusCode'] == 200
+
+
     def test_list_table_tags(self, dynamodb_client):
         """Test listing the tags on 'my-test-table' DynamoDB table"""
 
@@ -147,5 +182,5 @@ class TestDynamoDB:
 
             dynamodb_client.delete_table(TableName="my-test-table")
             res = dynamodb_client.list_tables()
-            
+
             assert res['TableNames'] != ["my-test-table"]
