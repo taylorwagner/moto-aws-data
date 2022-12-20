@@ -55,6 +55,18 @@ class TestRDSInstance:
             assert res['DBInstance']['IAMDatabaseAuthenticationEnabled'] == True
 
 
+    def test_stop_instance(self, rds_client):
+        """Test stopping the mock RDS instance"""
+
+        with create_db_instance(rds_client):
+
+            res = rds_client.stop_db_instance(
+                DBInstanceIdentifier="my-aurora-instance"
+            )
+
+            assert res['DBInstance']['DBInstanceStatus'] == 'stopped'
+
+
     def test_add_read_replica(self, rds_client):
         """Test adding a read replica of the mock RDS instance"""
 
