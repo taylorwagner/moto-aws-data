@@ -32,12 +32,12 @@ class TestRDSCluster:
             assert cluster_details['DBClusterIdentifier'] == "my-cluster"
 
 
-    def test_create_db_cluster_snapshot(self, rds_client):
-        """Test creation of mock RDS cluster snapshot"""
+    def test_create_and_delete_db_cluster_snapshot(self, rds_client):
+        """Test creation and deletion of mock RDS cluster snapshot"""
 
         with create_db_cluster(rds_client):
 
-            res = rds_client.create_db_cluster_snapshot(
+            create_res = rds_client.create_db_cluster_snapshot(
                 DBClusterSnapshotIdentifier="my-cluster-snap",
                 DBClusterIdentifier="my-cluster"
             )
@@ -46,6 +46,28 @@ class TestRDSCluster:
                 DBClusterIdentifier="my-cluster"
             )
             
-            assert res['DBClusterSnapshot']['DBClusterSnapshotIdentifier'] == 'my-cluster-snap'
-            assert res['DBClusterSnapshot']['SnapshotCreateTime'] != None
+            assert create_res['DBClusterSnapshot']['DBClusterSnapshotIdentifier'] == 'my-cluster-snap'
+            assert create_res['DBClusterSnapshot']['SnapshotCreateTime'] != None
             assert describe_snapshot['DBClusterSnapshots'][0]['DBClusterIdentifier'] == 'my-cluster'
+
+            rds_client.delete_db_cluster_snapshot(
+                DBClusterSnapshotIdentifier="my-cluster-snap"
+            )
+            describe_snapshot2 = rds_client.describe_db_cluster_snapshots(
+                DBClusterSnapshotIdentifier="my-cluster-snap",
+                DBClusterIdentifier="my-cluster"
+            )
+
+            assert describe_snapshot2['DBClusterSnapshots'] == []
+
+
+    def test_delete_db_cluster(self, rds_client):
+        """Test deletion of mock RDS cluster"""
+
+        with create_db_cluster(rds_client):
+
+            res = rds_client.delete_db_cluster(
+                DBClusterIdentifier="my-cluster"
+            )
+            
+            assert res['DBCluster']['EarliestRestorableTime'] != None
