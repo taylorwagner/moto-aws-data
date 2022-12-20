@@ -108,11 +108,30 @@ class TestDynamoDB:
 
             list_tags = dynamodb_client.list_tags_of_resource(ResourceArn=table_arn)
 
-            print(list_tags)
-
             assert list_tags['Tags'][2] == {'Key': 'NewTag', 'Value': 'NewValue'}
             assert list_tags['Tags'][3] == {'Key': 'NewestTag', 'Value': 'NewestValue'}
             assert len(list_tags['Tags']) == 4
+
+    def test_remove_tags(self, dynamodb_client):
+        """Test removing tags from 'my-test-table' DynamoDB table"""
+
+        with create_table(dynamodb_client):
+
+            res = dynamodb_client.describe_table(TableName="my-test-table")
+            table_arn = res['Table']['TableArn']
+
+            dynamodb_client.untag_resource(
+                ResourceArn=table_arn,
+                TagKeys=[
+                    'TestTag',
+                    'TestTag2'
+                ]
+            )
+
+            list_tags = dynamodb_client.list_tags_of_resource(ResourceArn=table_arn)
+
+            assert list_tags['Tags'] == []
+            assert len(list_tags['Tags']) == 0
 
     def test_delete_table(self, dynamodb_client):
         """Test deletion of 'my-test-table' DynamoDB table"""
