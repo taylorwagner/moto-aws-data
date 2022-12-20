@@ -5,7 +5,7 @@ from contextlib import contextmanager
 
 @contextmanager
 def create_db_instance(rds_client):
-    """Create mock RDS instance to test full CRUD operations"""
+    """Create mock RDS instance to test"""
 
     rds_client.create_db_instance(
         AllocatedStorage=10,
@@ -21,7 +21,7 @@ def create_db_instance(rds_client):
     yield
 
 
-class TestRDS:
+class TestRDSInstance:
     """Test CRUD operations on mock RDS instance"""
 
     def test_create_db_instance(self, rds_client):
@@ -68,5 +68,3 @@ class TestRDS:
             )
 
             assert res['DBInstance']['DBInstanceIdentifier'] == "my-aurora-instance"
-
-            
