@@ -49,6 +49,30 @@ class TestDynamoDB:
             assert res['Table']['TableName'] == "my-test-table"
             assert res2['TableNames'] == ["my-test-table"]
 
+    def test_put_item(self, dynamodb_client):
+        """Test adding an item to 'my-test-table' DynamoDB table"""
+
+        with create_table(dynamodb_client):
+
+            add_item = dynamodb_client.put_item(
+                TableName="my-test-table",
+                Item={
+                    "attribute1": {"S": "attribute1_value"},
+                    "attribute2": {"S": "attribute2_value"},
+                },
+            )
+
+            res = dynamodb_client.get_item(
+                TableName="my-test-table",
+                Key={
+                    "attribute1": {"S": "attribute1_value"},
+                    "attribute2": {"S": "attribute2_value"},
+                },
+            )
+
+            assert add_item['ResponseMetadata']['HTTPStatusCode'] == 200
+            assert res['Item']['attribute1'] != 'attribute1_value'
+
     def test_delete_table(self, dynamodb_client):
         """Test deletion of 'my-test-table' DynamoDB table"""
 
