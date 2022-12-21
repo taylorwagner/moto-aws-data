@@ -80,36 +80,37 @@ class TestDynamoDB:
             assert len(res['Item']) == 2
 
 
-    # def test_update_item(self, dynamodb_client):
-    #     """Test updating an item to 'my-test-table' DynamoDB table"""
+    @pytest.mark.skip
+    def test_update_item(self, dynamodb_client):
+        """Test updating an item to 'my-test-table' DynamoDB table"""
 
-    #     with create_table(dynamodb_client):
+        with create_table(dynamodb_client):
 
-    #         ## Add an item to update
-    #         dynamodb_client.put_item(
-    #             TableName=self.TABLE_NAME,
-    #             Item={
-    #                 "attribute1": {"S": "attribute1_value"},
-    #                 "attribute2": {"S": "attribute2_value"},
-    #                 "attribute3": {"S": "attribute3_value"}
-    #             },
-    #         )
+            ## Add an item to update
+            dynamodb_client.put_item(
+                TableName=self.TABLE_NAME,
+                Item={
+                    "attribute1": {"S": "attribute1_value"},
+                    "attribute2": {"S": "attribute2_value"},
+                    "attribute3": {"S": "attribute3_value"}
+                },
+            )
 
-    #         ## Update previously added item
-    #         dynamodb_client.update_item(
-    #             TableName=self.TABLE_NAME,
-    #             Key={"attribute1": "attribute1_value", "attribute2": "attribute2_value", "attribute3": "attribute3_value"},
-    #             UpdateExpression="REMOVE attribute3",
-    #             ReturnValues="UPDATED_NEW"
-    #         )
+            ## Update previously added item
+            dynamodb_client.update_item(
+                TableName=self.TABLE_NAME,
+                Key={"attribute1": "attribute1_value", "attribute2": "attribute2_value", "attribute3": "attribute3_value"},
+                UpdateExpression="REMOVE attribute3",
+                ReturnValues="UPDATED_NEW"
+            )
 
-    #         res = dynamodb_client.get_item(
-    #             TableName=self.TABLE_NAME,
-    #             Key={
-    #                 "attribute1": {"S": "attribute1_value"}
-    #             },
-    #         )
-    #         print(res)
+            res = dynamodb_client.get_item(
+                TableName=self.TABLE_NAME,
+                Key={
+                    "attribute1": {"S": "attribute1_value"}
+                },
+            )
+            print(res)
 
 
     def test_delete_item(self, dynamodb_client):
