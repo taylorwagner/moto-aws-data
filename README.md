@@ -1,4 +1,4 @@
-# Moto to test AWS DynamoDB
+# Moto Mock Testing AWS DynamoDB and AWS RDS
 
 ## Set Up Steps
 
@@ -8,12 +8,10 @@
 
 ## Test Command
 
-```pytest tests/```
-```pytest tests/test_dynamodb.py```
+* ```pytest```
 
 ### Debug Pro-Tip
 
-Include "-s" inside test command to see print statements:
-    ex: ```pytest -s tests/```
+Include "-s" and "-f" flags along with test command to see print statements and verbose results:
 
-Include "-sv" for detailed list of pass/fail per test
+* ex: ```pytest -sv tests/```
